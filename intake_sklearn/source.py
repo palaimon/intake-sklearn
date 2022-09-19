@@ -23,8 +23,6 @@ class SklearnModelSource(DataSource):
           - ``{{ CATALOG_DIR }}/models/model.pkl``
           - ``s3://some-bucket/models/model.pkl``
         """
-        print(f'storage_options: {storage_options}')
-        print(f'metadata: {metadata}')
         self._urlpath = urlpath
         self._storage_options = storage_options or {}
 
@@ -55,7 +53,7 @@ class SklearnModelSource(DataSource):
 
     def read(self):
         self._load_metadata()
-        print(f"self.metadata['sklearn_version']: {self.metadata['sklearn_version']}")
+
         if not self.metadata['sklearn_version'] == sklearn.__version__:
             msg = ('The model was created with Scikit-Learn version {} '
                    'but version {} has been installed in your current environment.'
