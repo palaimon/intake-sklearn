@@ -35,12 +35,16 @@ class SklearnModelSource(DataSource):
 
 
     def _get_schema(self):
-        as_binary = self._load()
-        s = re.search(r'(_sklearn_version).*(\d\.\d\.\d)', as_binary.decode('utf-8', 'ignore'))
-        if s:
-            sklearn_version = s.group(2)
+        as_binary = self._load().decode('utf-8', 'ignore')
+        has_sklearn_version = re.search(r'_sklearn_version', as_binary)
+        s = re.search(r'(_sklearn_version).*(\d\.\d\.\d)', as_binary)
+
+        if has_sklearn_version:
+            sklearn_version = s.group(2) if s else None
         else:
-            sklearn_version = None
+            # if no _sklearn_version on pkl file it will ignore
+            # the sklearn version validation
+            sklearn_version = sklearn.__version__
 
         self._schema = Schema(
             npartitions=1,
